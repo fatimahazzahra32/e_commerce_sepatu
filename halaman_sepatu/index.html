@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLESTREET | Shoe Store</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-detail, .btn-cart {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-detail {
+            border: 1px solid #bd7837;
+            color: #bd7837;
+            background: white;
+        }
+
+        .btn-cart {
+            border: none;
+            background: #bd7837;
+            color: white;
+        }
+
+        .btn-cart:hover {
+            background: #a8662c;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .flash-message {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 12px 20px;
+            border-radius: 6px;
+            background: #e9f5eb;
+            color: #287b45;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+        }
+
+        .cart-link {
+            color: #bd7837 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo">SOLE<span>STREET.</span></a>
+
+    <div class="nav-menu">
+        <a href="/">Home</a>
+        <a href="#produk">Products</a>
+        <a href="#tentang">About</a>
+        <a href="/keranjang" class="cart-link">Cart</a>
+        <a href="/admin" class="admin-link">Admin</a>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="flash-message">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endwith %}
+
+<section class="hero">
+    <div class="hero-content">
+        <p class="subtitle">STEP INTO YOUR STYLE</p>
+
+        <h1>
+            FIND YOUR<br>
+            PERFECT <span>PAIR.</span>
+        </h1>
+
+        <p class="hero-description">
+            Temukan sepatu terbaik untuk melengkapi gaya dan
+            aktivitasmu setiap hari.
+        </p>
+
+        <a href="#produk" class="btn-primary">SHOP NOW →</a>
+    </div>
+
+    <div class="hero-image">
+        <div class="shoe-circle">👟</div>
+        <span class="circle-text">NEW COLLECTION 2026</span>
+    </div>
+</section>
+
+<section class="categories">
+    <div class="section-heading">
+        <div>
+            <p class="subtitle">EXPLORE COLLECTION</p>
+            <h2>Shop By Category</h2>
+        </div>
+    </div>
+
+    <div class="category-list">
+        <a href="#produk" class="category-item">👟 Sneakers</a>
+        <a href="#produk" class="category-item">🏃 Running</a>
+        <a href="#produk" class="category-item">✨ Casual</a>
+        <a href="#produk" class="category-item">🛹 Skate Shoes</a>
+    </div>
+</section>
+
+<section class="products-section" id="produk">
+    <div class="section-heading">
+        <div>
+            <p class="subtitle">OUR COLLECTION</p>
+            <h2>Featured Products</h2>
+            <p class="section-description">
+                Pilihan sepatu terbaik untuk gaya kamu.
+            </p>
+        </div>
+
+        <span class="product-count">
+            {{ products|length }} Products
+        </span>
+    </div>
+
+    <div class="product-grid">
+
+        {% for p in products %}
+
+        <div class="product-card">
+
+            <div class="product-image">
+                {% if p.gambar %}
+                    <img
+                        src="{{ url_for('static', filename='uploads/' ~ p.gambar) }}"
+                        alt="{{ p.nama_produk }}"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+
+                    <span class="shoe-placeholder" style="display:none;">
+                        👟
+                    </span>
+                {% else %}
+                    <span class="shoe-placeholder">👟</span>
+                {% endif %}
+            </div>
+
+            <div class="product-info">
+
+                <p class="brand">
+                    {{ p.merek }} | {{ p.kategori }}
+                </p>
+
+                <h3>{{ p.nama_produk }}</h3>
+
+                <p class="product-detail">
+                    Size {{ p.ukuran }} · {{ p.warna }}
+                </p>
+
+                <div class="product-bottom">
+                    <div>
+                        <p class="price">
+                            Rp {{ "{:,.0f}".format(p.harga|float).replace(",", ".") }}
+                        </p>
+
+                        <p class="stock">
+                            Stok: {{ p.stok }}
+                        </p>
+                    </div>
+
+                    <span class="cart-icon">👟</span>
+                </div>
+
+                <div class="product-actions">
+                    <a href="/keranjang" class="btn-detail">
+                        Lihat Keranjang
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        {% else %}
+
+        <div class="empty-product">
+            <h3>Belum Ada Produk</h3>
+            <p>Silakan tambahkan produk melalui dashboard admin.</p>
+            <a href="/admin">Buka Dashboard</a>
+        </div>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+<section class="about-section" id="tentang">
+    <div>
+        <p class="subtitle">ABOUT SOLESTREET</p>
+        <h2>Every Step<br>Starts With Style.</h2>
+    </div>
+
+    <p>
+        SOLESTREET menghadirkan berbagai pilihan sepatu
+        berkualitas dengan desain modern untuk menemani
+        setiap langkah dan aktivitasmu.
+    </p>
+</section>
+
+<footer>
+    <h2>SOLE<span>STREET.</span></h2>
+    <p>Find Your Perfect Pair. © 2026 SOLESTREET</p>
+</footer>
+
+</body>
+</html>

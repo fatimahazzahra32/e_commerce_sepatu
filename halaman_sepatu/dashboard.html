@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | SOLESTREET</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #222;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo span, footer span {
+            color: #bd7837;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-menu a {
+            color: #444;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .nav-menu a:hover {
+            color: #bd7837;
+        }
+
+        /* DASHBOARD */
+        .dashboard-container {
+            max-width: 1150px;
+            margin: 60px auto;
+            padding: 0 25px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .dashboard-container h1 {
+            font-size: 36px;
+            margin: 0 0 12px;
+        }
+
+        .section-description {
+            color: #777;
+            font-size: 15px;
+        }
+
+        /* STATISTIK */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            margin-top: 40px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 28px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .card-label {
+            color: #bd7837;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .dashboard-card h2 {
+            font-size: 19px;
+            margin: 15px 0 8px;
+        }
+
+        .total-number {
+            font-size: 38px;
+            font-weight: bold;
+            margin: 10px 0 22px;
+        }
+
+        .card-link {
+            display: inline-block;
+            color: #bd7837;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .card-link:hover {
+            text-decoration: underline;
+        }
+
+        /* INFORMASI */
+        .welcome-box {
+            background: #222;
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 35px;
+        }
+
+        .welcome-box h2 {
+            margin-top: 0;
+        }
+
+        .welcome-box p {
+            color: #ddd;
+            line-height: 1.7;
+        }
+
+        /* FOOTER */
+        footer {
+            margin-top: 80px;
+            padding: 35px 20px;
+            background: white;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        footer h2 {
+            margin: 0 0 10px;
+            font-size: 22px;
+        }
+
+        footer p {
+            color: #888;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-container h1 {
+                font-size: 28px;
+            }
+
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-menu {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{{ url_for('index') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+
+    <div class="nav-menu">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('daftar_produk') }}">Produk</a>
+    </div>
+</nav>
+
+
+<!-- DASHBOARD CONTENT -->
+<main class="dashboard-container">
+
+    <p class="subtitle">ADMINISTRATION</p>
+
+    <h1>Dashboard Admin</h1>
+
+    <p class="section-description">
+        Selamat datang di halaman pengelolaan toko SOLESTREET.
+        Kelola produk, pelanggan, dan pesanan toko melalui dashboard ini.
+    </p>
+
+
+    <!-- STATISTIK -->
+    <div class="dashboard-grid">
+
+        <!-- TOTAL PRODUK -->
+        <div class="dashboard-card">
+            <p class="card-label">INVENTORY</p>
+
+            <h2>Total Produk</h2>
+
+            <p class="total-number">{{ total_produk }}</p>
+
+            <a href="{{ url_for('daftar_produk') }}" class="card-link">
+                Kelola Produk →
+            </a>
+        </div>
+
+
+        <!-- TOTAL PELANGGAN -->
+        <div class="dashboard-card">
+            <p class="card-label">CUSTOMERS</p>
+
+            <h2>Total Pelanggan</h2>
+
+            <p class="total-number">{{ total_pelanggan }}</p>
+
+            <a href="/admin/pelanggan" class="card-link">
+                Lihat Pelanggan →
+            </a>
+        </div>
+
+
+        <!-- TOTAL PESANAN -->
+        <div class="dashboard-card">
+            <p class="card-label">TRANSACTIONS</p>
+
+            <h2>Total Pesanan</h2>
+
+            <p class="total-number">{{ total_pesanan }}</p>
+
+            <a href="/admin/pesanan" class="card-link">
+                Lihat Pesanan →
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- INFORMASI -->
+    <div class="welcome-box">
+        <h2>Welcome to SOLESTREET Admin</h2>
+
+        <p>
+            Dashboard ini digunakan untuk mengelola aktivitas toko
+            SOLESTREET. Admin dapat menambahkan produk sepatu,
+            memperbarui informasi produk, mengelola pelanggan,
+            serta memantau pesanan yang masuk.
+        </p>
+    </div>
+
+</main>
+
+
+<!-- FOOTER -->
+<footer>
+    <h2>SOLE<span>STREET.</span></h2>
+    <p>Admin Dashboard © 2026</p>
+</footer>
+
+</body>
+</html>

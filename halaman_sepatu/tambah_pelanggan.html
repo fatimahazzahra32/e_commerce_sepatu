@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Pelanggan | SOLESTREET</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        nav {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #222;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        nav span { color: #bd7837; }
+
+        .container {
+            max-width: 800px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .group { margin-bottom: 18px; }
+        .full { grid-column: 1 / -1; }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-save {
+            background: #bd7837;
+            color: white;
+            padding: 13px 22px;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            background: #eee;
+            color: #333;
+            padding: 13px 22px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+
+        .alert {
+            padding: 12px;
+            background: #f8e2e2;
+            color: #a52a2a;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .full { grid-column: auto; }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="{{ url_for('dashboard') }}">SOLE<span>STREET.</span></a>
+</nav>
+
+<main class="container">
+
+    <p class="subtitle">CUSTOMER MANAGEMENT</p>
+    <h1>Tambah Pelanggan</h1>
+    <p>Masukkan informasi pelanggan baru.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="card">
+
+        <form method="POST" action="{{ url_for('tambah_pelanggan') }}">
+
+            <div class="grid">
+
+                <div class="group">
+                    <label>Nama Pelanggan</label>
+                    <input type="text" name="nama_pelanggan"
+                           placeholder="Nama lengkap" required>
+                </div>
+
+                <div class="group">
+                    <label>Email</label>
+                    <input type="email" name="email"
+                           placeholder="contoh@email.com" required>
+                </div>
+
+                <div class="group">
+                    <label>Password</label>
+                    <input type="password" name="password"
+                           placeholder="Buat password" required>
+                </div>
+
+                <div class="group">
+                    <label>Nomor Telepon</label>
+                    <input type="text" name="no_telepon"
+                           placeholder="08xxxxxxxxxx">
+                </div>
+
+                <div class="group full">
+                    <label>Alamat</label>
+                    <textarea name="alamat"
+                              placeholder="Masukkan alamat lengkap"></textarea>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-save">
+                Simpan Pelanggan
+            </button>
+
+            <a href="{{ url_for('daftar_pelanggan') }}" class="btn-back">
+                Batal
+            </a>
+
+        </form>
+
+    </div>
+
+</main>
+
+</body>
+</html>

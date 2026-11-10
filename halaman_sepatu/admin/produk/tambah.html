@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Produk | SOLESTREET</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .logo span {
+            color: #bd7837;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 45px auto;
+            padding: 0 20px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #bd7837;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .file-info {
+            color: #888;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .btn-save {
+            background: #bd7837;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            background: #eee;
+            color: #333;
+            text-decoration: none;
+            padding: 13px 22px;
+            border-radius: 6px;
+        }
+
+        .message {
+            background: #f8e2e2;
+            color: #a52a2a;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+</nav>
+
+<main class="container">
+
+    <p class="subtitle">INVENTORY MANAGEMENT</p>
+    <h1>Tambah Produk</h1>
+    <p class="description">
+        Masukkan informasi sepatu baru ke dalam database SOLESTREET.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="message">{{ message }}</div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="form-card">
+
+        <form method="POST"
+              action="{{ url_for('tambah_produk') }}"
+              enctype="multipart/form-data">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input
+                        type="text"
+                        name="nama_produk"
+                        placeholder="Contoh: Nike Air Force 1"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Merek</label>
+                    <input
+                        type="text"
+                        name="merek"
+                        placeholder="Contoh: Nike"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select name="kategori" required>
+                        <option value="">Pilih Kategori</option>
+                        <option value="Sneakers">Sneakers</option>
+                        <option value="Running">Running</option>
+                        <option value="Casual">Casual</option>
+                        <option value="Sport">Sport</option>
+                        <option value="Formal">Formal</option>
+                        <option value="Slip On">Slip On</option>
+                        <option value="Boots">Boots</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Ukuran</label>
+                    <input
+                        type="text"
+                        name="ukuran"
+                        placeholder="Contoh: 38, 39, 40, 41"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Warna</label>
+                    <input
+                        type="text"
+                        name="warna"
+                        placeholder="Contoh: Putih"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Harga (Rp)</label>
+                    <input
+                        type="number"
+                        name="harga"
+                        min="0"
+                        placeholder="Contoh: 850000"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input
+                        type="number"
+                        name="stok"
+                        min="0"
+                        placeholder="Contoh: 20"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto Produk</label>
+                    <input
+                        type="file"
+                        name="gambar"
+                        accept=".jpg,.jpeg,.png,.webp">
+                    <p class="file-info">
+                        Format JPG, JPEG, PNG, atau WEBP. Maksimal 5 MB.
+                    </p>
+                </div>
+
+                <div class="form-group full">
+                    <label>Deskripsi Produk</label>
+                    <textarea
+                        name="deskripsi"
+                        placeholder="Masukkan deskripsi sepatu..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn-save">
+                    Simpan Produk
+                </button>
+
+                <a href="{{ url_for('daftar_produk') }}" class="btn-back">
+                    Batal
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+</body>
+</html>

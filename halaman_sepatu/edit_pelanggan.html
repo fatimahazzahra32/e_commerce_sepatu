@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Pelanggan | SOLESTREET</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .logo span { color: #bd7837; }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        h1 { margin-bottom: 10px; }
+
+        .description { color: #777; }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .btn-save {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: #bd7837;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-save:hover { background: #a8662c; }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #bd7837;
+            text-decoration: none;
+        }
+
+        .alert {
+            background: #f8e2e2;
+            color: #a52a2a;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+</nav>
+
+<div class="container">
+    <div class="form-card">
+
+        <p class="subtitle">CUSTOMER MANAGEMENT</p>
+        <h1>Edit Pelanggan</h1>
+
+        <p class="description">
+            Perbarui informasi pelanggan SOLESTREET.
+        </p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <label>Nama Pelanggan</label>
+            <input type="text"
+                   name="nama_pelanggan"
+                   value="{{ customer.nama_pelanggan }}"
+                   required>
+
+            <label>Email</label>
+            <input type="email"
+                   name="email"
+                   value="{{ customer.email }}"
+                   required>
+
+            <label>Password Baru (Opsional)</label>
+            <input type="password"
+                   name="password"
+                   placeholder="Kosongkan jika tidak ingin mengubah password">
+
+            <label>No. Telepon</label>
+            <input type="text"
+                   name="no_telepon"
+                   value="{{ customer.no_telepon or '' }}">
+
+            <label>Alamat</label>
+            <textarea name="alamat">{{ customer.alamat or '' }}</textarea>
+
+            <button type="submit" class="btn-save">
+                Simpan Perubahan
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('daftar_pelanggan') }}" class="back">
+            ← Kembali ke Kelola Pelanggan
+        </a>
+
+    </div>
+</div>
+</body>
+</html>

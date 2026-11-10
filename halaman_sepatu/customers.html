@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Pelanggan | SOLESTREET</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .logo span { color: #bd7837; }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #444;
+            margin-left: 25px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 55px auto;
+            padding: 0 25px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin: 10px 0;
+        }
+
+        .description { color: #777; }
+
+        .btn-add {
+            background: #bd7837;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .table-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th, td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f5f1ec;
+            font-size: 13px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px;
+            color: #777;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            color: #bd7837;
+            text-decoration: none;
+        }
+
+        .alert {
+            padding: 13px 16px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+
+        .alert-success {
+            background: #e9f5eb;
+            color: #287b45;
+        }
+
+        .alert-danger {
+            background: #f8e2e2;
+            color: #a52a2a;
+        }
+
+        .action {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: #eaf1fb;
+            color: #2862a5;
+        }
+
+        .btn-delete {
+            background: #fbeaea;
+            color: #c0392b;
+        }
+
+        /* Modal hapus */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            margin-top: 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            background: #eee;
+            color: #333;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            background: #c0392b;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media(max-width: 650px) {
+            .heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+
+    <div class="nav-menu">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('daftar_produk') }}">Produk</a>
+        <a href="{{ url_for('daftar_pelanggan') }}">Pelanggan</a>
+    </div>
+</nav>
+
+<main class="container">
+
+    <div class="heading">
+        <div>
+            <p class="subtitle">CUSTOMER MANAGEMENT</p>
+            <h1>Kelola Pelanggan</h1>
+            <p class="description">
+                Lihat dan kelola informasi pelanggan SOLESTREET.
+            </p>
+        </div>
+
+        <a href="{{ url_for('tambah_pelanggan') }}" class="btn-add">
+            + Tambah Pelanggan
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Email</th>
+                    <th>No. Telepon</th>
+                    <th>Alamat</th>
+                    <th>Tanggal Daftar</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.id_pelanggan }}</td>
+                    <td>{{ customer.nama_pelanggan }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.no_telepon or '-' }}</td>
+                    <td>{{ customer.alamat or '-' }}</td>
+                    <td>{{ customer.tanggal_daftar or '-' }}</td>
+
+                    <td>
+                        <div class="action">
+                            <a href="{{ url_for('edit_pelanggan', id=customer.id_pelanggan) }}"
+                               class="btn-edit">
+                                Edit
+                            </a>
+
+                            <button type="button"
+                                    class="btn-delete"
+                                    onclick="openDeleteModal(this)"
+                                    data-name="{{ customer.nama_pelanggan }}">
+                                Hapus
+                            </button>
+
+                            <form action="{{ url_for('hapus_pelanggan', id=customer.id_pelanggan) }}"
+                                  method="POST"
+                                  class="delete-form"
+                                  style="display:none;">
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+
+                {% else %}
+                <tr>
+                    <td colspan="7" class="empty">
+                        <h3>Belum Ada Pelanggan</h3>
+                        <p>Data pelanggan akan muncul setelah ditambahkan.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Kembali ke Dashboard
+    </a>
+
+</main>
+
+<!-- Modal konfirmasi hapus -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <h3>Hapus Pelanggan?</h3>
+        <p id="deleteMessage">
+            Apakah kamu yakin ingin menghapus pelanggan ini?
+        </p>
+
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeDeleteModal()">
+                Batal
+            </button>
+
+            <button class="btn-confirm" onclick="confirmDelete()">
+                Ya, Hapus
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedDeleteForm = null;
+
+    function openDeleteModal(button) {
+        selectedDeleteForm = button.parentElement.querySelector('.delete-form');
+
+        const name = button.dataset.name;
+
+        document.getElementById('deleteMessage').textContent =
+            'Apakah kamu yakin ingin menghapus pelanggan ' + name + '?';
+
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').style.display = 'none';
+        selectedDeleteForm = null;
+    }
+
+    function confirmDelete() {
+        if (selectedDeleteForm) {
+            selectedDeleteForm.submit();
+        }
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeDeleteModal();
+        }
+    });
+</script>
+
+</body>
+</html>

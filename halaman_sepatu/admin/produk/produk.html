@@ -1,0 +1,601 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Produk | SOLESTREET</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .logo span {
+            color: #bd7837;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #444;
+            margin-left: 25px;
+        }
+
+        .nav-menu a:hover {
+            color: #bd7837;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 55px auto;
+            padding: 0 25px;
+        }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 34px;
+            margin: 10px 0;
+        }
+
+        .description {
+            color: #777;
+        }
+
+        .btn-add {
+            display: inline-block;
+            background: #bd7837;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-add:hover {
+            background: #a8662c;
+        }
+
+        .table-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th, td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f1ec;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .product-img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #f5f1ec;
+        }
+
+        .no-image {
+            width: 65px;
+            height: 65px;
+            background: #f5f1ec;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            border-radius: 6px;
+        }
+
+        .edit {
+            display: inline-block;
+            background: #f1e7d9;
+            color: #805326;
+            padding: 9px 13px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 4px;
+        }
+
+        .edit:hover {
+            background: #e7d5bd;
+        }
+
+        .delete {
+            background: #f8e2e2;
+            color: #a52a2a;
+            border: none;
+            padding: 9px 13px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete:hover {
+            background: #f2cccc;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #777;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            color: #bd7837;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 13px 16px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+        }
+
+        .alert-success {
+            background: #e9f5eb;
+            color: #287b45;
+        }
+
+        .alert-danger {
+            background: #f8e2e2;
+            color: #a52a2a;
+        }
+
+        .stock-low {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        /* MODAL KONFIRMASI HAPUS */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(25, 25, 25, 0.55);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+            animation: modalShow 0.25s ease;
+        }
+
+        .modal-icon {
+            width: 65px;
+            height: 65px;
+            background: #fbeaea;
+            color: #bd4545;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin: 0 auto 18px;
+        }
+
+        .modal-box h2 {
+            margin: 0 0 12px;
+            font-size: 22px;
+        }
+
+        .modal-box p {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel,
+        .btn-confirm {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-cancel {
+            background: #f0efed;
+            color: #444;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e3df;
+        }
+
+        .btn-confirm {
+            background: #bd4545;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #a83232;
+        }
+
+        @keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width: 650px) {
+            .heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-menu a {
+                margin-left: 10px;
+                font-size: 13px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .modal-box {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+
+    <div class="nav-menu">
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('daftar_produk') }}">Produk</a>
+    </div>
+
+</nav>
+
+
+<!-- KONTEN PRODUK -->
+<main class="container">
+
+    <div class="heading">
+
+        <div>
+            <p class="subtitle">INVENTORY MANAGEMENT</p>
+
+            <h1>Kelola Produk</h1>
+
+            <p class="description">
+                Kelola koleksi sepatu SOLESTREET di sini.
+            </p>
+        </div>
+
+        <a href="{{ url_for('tambah_produk') }}" class="btn-add">
+            + Tambah Produk
+        </a>
+
+    </div>
+
+
+    <!-- NOTIFIKASI -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% for category, message in messages %}
+
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endwith %}
+
+
+    <!-- TABEL PRODUK -->
+    <div class="table-card">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Foto</th>
+                    <th>Nama Produk</th>
+                    <th>Merek</th>
+                    <th>Kategori</th>
+                    <th>Ukuran</th>
+                    <th>Warna</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for product in products %}
+
+                <tr>
+
+                    <td>
+                        {% if product.gambar %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + product.gambar) }}"
+                                class="product-img"
+                                alt="{{ product.nama_produk }}"
+                            >
+
+                        {% else %}
+
+                            <div class="no-image">👟</div>
+
+                        {% endif %}
+                    </td>
+
+                    <td>{{ product.nama_produk }}</td>
+                    <td>{{ product.merek }}</td>
+                    <td>{{ product.kategori }}</td>
+                    <td>{{ product.ukuran }}</td>
+                    <td>{{ product.warna }}</td>
+
+                    <td>
+                        Rp {{ "{:,.0f}".format(product.harga|float) }}
+                    </td>
+
+                    <td>
+                        {% if product.stok|int <= 5 %}
+                            <span class="stock-low">
+                                {{ product.stok }}
+                            </span>
+                        {% else %}
+                            {{ product.stok }}
+                        {% endif %}
+                    </td>
+
+                    <td>
+
+                        <!-- TOMBOL EDIT -->
+                        <a
+                            href="{{ url_for('edit_produk', id=product.id_produk) }}"
+                            class="edit">
+                            Edit
+                        </a>
+
+                        <!-- FORM HAPUS -->
+                        <form
+                            method="POST"
+                            action="{{ url_for('hapus_produk', id=product.id_produk) }}"
+                            class="delete-form"
+                            style="display:inline">
+
+                            <button
+                                type="button"
+                                class="delete"
+                                onclick="openDeleteModal(this)">
+                                Hapus
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="9" class="empty">
+
+                        <h3>Belum Ada Produk</h3>
+
+                        <p>
+                            Tambahkan produk sepatu pertama kamu.
+                        </p>
+
+                        <a
+                            href="{{ url_for('tambah_produk') }}"
+                            class="btn-add">
+                            + Tambah Produk
+                        </a>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <a href="{{ url_for('dashboard') }}" class="back">
+        ← Kembali ke Dashboard
+    </a>
+
+</main>
+
+
+<!-- MODAL KONFIRMASI HAPUS -->
+<div class="modal-overlay" id="deleteModal">
+
+    <div class="modal-box">
+
+        <div class="modal-icon">!</div>
+
+        <h2>Hapus Produk?</h2>
+
+        <p>
+            Apakah kamu yakin ingin menghapus produk ini?
+            Data produk yang dihapus tidak dapat dikembalikan.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeDeleteModal()">
+                Batal
+            </button>
+
+            <button
+                type="button"
+                class="btn-confirm"
+                onclick="confirmDelete()">
+                Ya, Hapus
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- JAVASCRIPT MODAL -->
+<script>
+
+    let selectedDeleteForm = null;
+
+    function openDeleteModal(button) {
+
+        selectedDeleteForm = button.closest(".delete-form");
+
+        document.getElementById("deleteModal")
+            .classList.add("active");
+    }
+
+    function closeDeleteModal() {
+
+        document.getElementById("deleteModal")
+            .classList.remove("active");
+
+        selectedDeleteForm = null;
+    }
+
+    function confirmDelete() {
+
+        if (selectedDeleteForm) {
+            selectedDeleteForm.submit();
+        }
+    }
+
+    document.getElementById("deleteModal")
+        .addEventListener("click", function(event) {
+
+            if (event.target === this) {
+                closeDeleteModal();
+            }
+
+        });
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+            closeDeleteModal();
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Pesanan | SOLESTREET</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f8f7f5;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .navbar {
+            background: white;
+            padding: 20px 8%;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #222;
+        }
+
+        .logo span { color: #bd7837; }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        h1 { margin-top: 0; }
+
+        .subtitle {
+            color: #bd7837;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: #bd7837;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover { background: #a8662c; }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #bd7837;
+            text-decoration: none;
+        }
+
+        .alert {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #f8e2e2;
+            color: #a52a2a;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="{{ url_for('dashboard') }}" class="logo">
+        SOLE<span>STREET.</span>
+    </a>
+</nav>
+
+<div class="container">
+    <div class="form-card">
+
+        <p class="subtitle">TRANSACTION MANAGEMENT</p>
+        <h1>Tambah Pesanan</h1>
+        <p>Masukkan informasi transaksi pelanggan.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <label>Nama Pelanggan</label>
+            <select name="id_pelanggan" required>
+                <option value="">Pilih Pelanggan</option>
+                {% for customer in customers %}
+                <option value="{{ customer.id_pelanggan }}">
+                    {{ customer.nama_pelanggan }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Nama Produk</label>
+            <select name="id_produk" required>
+                <option value="">Pilih Produk</option>
+                {% for product in products %}
+                <option value="{{ product.id_produk }}">
+                    {{ product.nama_produk }} -
+                    Rp {{ "{:,.0f}".format(product.harga|float) }}
+                    (Stok: {{ product.stok }})
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Tanggal Pesanan</label>
+            <input type="date" name="tanggal_pesanan"
+                   value="{{ '' }}" required>
+
+            <label>Jumlah Pesanan</label>
+            <input type="number" name="jumlah"
+                   min="1" placeholder="Masukkan jumlah" required>
+
+            <label>Metode Pembayaran</label>
+            <select name="metode_pembayaran" required>
+                <option value="">Pilih Pembayaran</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="COD">COD</option>
+                <option value="E-Wallet">E-Wallet</option>
+            </select>
+
+            <button type="submit" class="btn-submit">
+                Simpan Pesanan
+            </button>
+
+        </form>
+
+        <a href="{{ url_for('daftar_pesanan') }}" class="back">
+            ← Kembali ke Kelola Pesanan
+        </a>
+
+    </div>
+</div>
+
+</body>
+</html>

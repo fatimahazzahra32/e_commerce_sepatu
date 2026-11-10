@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Produk | SOLESTREET</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { background: #f7f7f7; }
+        .admin-container {
+            max-width: 1150px;
+            margin: 45px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .add-button {
+            background: #bd7837;
+            color: white;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 6px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th { background: #f5f1ec; }
+        .edit, .delete {
+            padding: 7px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .edit { background: #eee2d4; color: #70451e; }
+        .delete { background: #f8dddd; color: #a22; }
+        .delete-form { display: inline; }
+        .message { margin-bottom: 15px; color: #287b45; }
+        @media(max-width:700px) {
+            .admin-container { overflow-x: auto; margin: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="top-bar">
+        <div>
+            <h1>Data Produk</h1>
+            <p>Kelola koleksi sepatu SOLESTREET.</p>
+        </div>
+        <a class="add-button" href="{{ url_for('tambah_produk') }}">
+            + Tambah Produk
+        </a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama Produk</th>
+                <th>Merek</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id_produk }}</td>
+                <td>{{ product.nama_produk }}</td>
+                <td>{{ product.merek }}</td>
+                <td>{{ product.kategori }}</td>
+                <td>Rp {{ "{:,.0f}".format(product.harga) }}</td>
+                <td>{{ product.stok }}</td>
+                <td>
+                    <a class="edit"
+                       href="{{ url_for('edit_produk', id=product.id_produk) }}">
+                        Edit
+                    </a>
+
+                    <form class="delete-form"
+                          action="{{ url_for('hapus_produk', id=product.id_produk) }}"
+                          method="POST"
+                          onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+                        <button class="delete" type="submit">Hapus</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align:center;">
+                    Belum ada produk. Silakan tambahkan produk.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{{ url_for('dashboard') }}">Kembali ke Dashboard</a></p>
+</div>
+
+</body>
+</html>
